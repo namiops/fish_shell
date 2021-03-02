@@ -1,0 +1,13 @@
+# Run wehn MacOs (only local)
+- name: Found MacOs version
+  debug:
+    msg: "MacOs version {{ ansible_facts['distribution_major_version'] }}"
+
+- name: Brew install fish on MacOs
+  homebrew: name=fish state=present
+  tags:
+    - common
+    - common-fish
+
+- name: Finished install
+  debug: var=installed

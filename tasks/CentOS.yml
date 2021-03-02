@@ -1,0 +1,38 @@
+# Run when  OS CentOS
+- name: Centos version
+  debug: var=ansible_facts['distribution_major_version']
+
+- name: Install commmon packages for fish
+  yum: name="{{ common_packages }}" state="present"
+  ignore_errors: yes
+  tags:
+    - common
+
+- name: Setup fish repo for CentOs8
+  shell: |
+    cd /etc/yum.repos.d/
+    wget https://download.opensuse.org/repositories/shells:fish:release:3/CentOS_8/shells:fish:release:3.repo
+  when: ansible_facts['distribution_major_version'] == "8"
+  tags:
+    - common
+    - common-fish
+
+- name: Setup fish repo for CentOs7
+  shell: |
+    cd /etc/yum.repos.d/
+    wget https://download.opensuse.org/repositories/shells:fish:release:2/CentOS_7/shells:fish:release:2.repo
+  when: ansible_facts['distribution_major_version'] == "7"
+  tags:
+    - common
+    - common-fish
+
+- name: Install fish
+  yum: name=fish state=present
+  tags:
+    - common
+    - common-fish
+  register: installed
+
+- name: Finished install
+  debug:
+    var: installed

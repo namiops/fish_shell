@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include fish_shell"
+      include_role:
+        name: "fish_shell"
+      vars:
+        fish_as_default_shell: True
+
+    - name: "Create Test user"
+      user:
+        name: testuser
+        shell: /usr/bin/fish
+
+    - name: "test"
+      raw: grep "testuser" /etc/passwd
+      register: out_test
+      changed_when: False
+
+    - name: "Assert"
+      assert:
+        that: out_test.stdout is match('.*fish.*')
+
+  post_tasks:
+    - name: "Test fish installed"
+      command: fish
+      changed_when: False

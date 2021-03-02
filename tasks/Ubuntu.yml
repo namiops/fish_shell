@@ -1,0 +1,19 @@
+# Run when  OS is Ubuntu
+- name: Found Ubuntu version
+  debug:
+    msg: "Ubuntu version {{ ansible_facts['distribution_major_version'] }}"
+
+- name: Upgrade all apt packages
+  apt: upgrade=dist force_apt_get=yes
+
+- name: Enable sudo for default fish shell
+  apt: name=sudo state=present
+  tags:
+    - common
+
+- name: Install fish
+  apt: name=fish state=present
+  tags:
+    - common
+    - common-fish
+  register: installed
